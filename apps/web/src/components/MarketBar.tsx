@@ -2,18 +2,40 @@
 import { useEffect, useState } from "react";
 import { Ticker as TickerType } from "../utils/types";
 import { getTicker } from "../utils/requests";
+import { WsManager } from "../utils/ws_manager";
 
 export const MarketBar = ({ market }: { market: string }) => {
   const [ticker, setTicker] = useState<TickerType | null>(null);
 
   useEffect(() => {
     getTicker(market).then(setTicker);
-  }, [market]);
-  //
+
+    WsManager.getInstance().registerCallback(
+      "ticker",
+      (data: any) => {
+        console.log("ticker has been updated");
+        console.log(data);
+      },
+      `TICKER-${market}`
+    );
+
+    WsManager.getInstance().sendMessage({
+      method: "SUBSCRIBE",
+      params: [`trade.${market}`],
+    });
+
+    return () => {
+      WsManager.getInstance().sendMessage({
+        method: "UNSUBSCRIBE",
+        params: [`trade.${market}`],
+      });
+      WsManager.getInstance().deRegisterCallback("ticker", `TICKER-${market}`);
+    };
+  }, []);
 
   return (
     <div>
-      <div className="flex items-center flex-row relative w-full overflow-hidden border-b border-slate-800">
+      <div className="flex items-center flex-row rounded-t-lg relative overflow-hidden bg-[#0e0f14] border-b border-slate-800">
         <div className="flex items-center justify-between flex-row no-scrollbar overflow-auto pr-4">
           <Ticker market={market} />
           <div className="flex items-center flex-row space-x-8 pl-4">

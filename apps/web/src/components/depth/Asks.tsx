@@ -12,7 +12,7 @@ export const Asks = ({ asks }: { asks: [string, string][] }) => {
   asksWithTotal.reverse();
 
   return (
-    <div>
+    <div className="h-[40%]  overflow-auto">
       {asksWithTotal.map(([price, quantity, total]) => (
         <Ask
           maxTotal={maxTotal}

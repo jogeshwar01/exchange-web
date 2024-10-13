@@ -11,7 +11,8 @@ export default {
         redBackgroundTransparent: 'rgba(234,56,59,.12)',
         baseBackgroundL2: "rgb(32,33,39)",
         baseBackgroundL3: "rgb(32,33,39)",
-        greenPrimaryButtonBackground: "rgb(0,194,120)"
+        greenPrimaryButtonBackground: "rgb(0,194,120)",
+        redPrimaryButtonBackground: "rgb(234,56,59)"
       },
       borderColor: {
         redBorder: 'rgba(234,56,59,.5)',

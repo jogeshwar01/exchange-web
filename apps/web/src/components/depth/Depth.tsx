@@ -10,6 +10,7 @@ export function Depth({ market }: { market: string }) {
   const [bids, setBids] = useState<[string, string][]>();
   const [asks, setAsks] = useState<[string, string][]>();
   const [price, setPrice] = useState<string>();
+  const [depthOrTrades, setDepthOrTrades] = useState("depth");
 
   useEffect(() => {
     WsManager.getInstance().registerCallback(
@@ -104,10 +105,24 @@ export function Depth({ market }: { market: string }) {
 
   return (
     <div>
-      <TableHeader />
-      {asks && <Asks asks={asks} />}
-      {price && <div>{price}</div>}
-      {bids && <Bids bids={bids} />}
+      <div>
+        <div className="flex flex-row flex-0 gap-5 w-[100%]">
+          <BookButton
+            depthOrTrades={depthOrTrades}
+            setDepthOrTrades={setDepthOrTrades}
+          />
+          <TradesButton
+            depthOrTrades={depthOrTrades}
+            setDepthOrTrades={setDepthOrTrades}
+          />
+        </div>
+      </div>
+      <div className="flex flex-col justify-center h-[78vh]">
+        <TableHeader />
+        {asks && <Asks asks={asks} />}
+        {price && <div>{price}</div>}
+        {bids && <Bids bids={bids} />}
+      </div>
     </div>
   );
 }
@@ -118,6 +133,36 @@ function TableHeader() {
       <div className="text-white">Price</div>
       <div className="text-slate-500">Size</div>
       <div className="text-slate-500">Total</div>
+    </div>
+  );
+}
+
+function BookButton({ depthOrTrades, setDepthOrTrades }: { depthOrTrades: string; setDepthOrTrades: any }) {
+  return (
+    <div
+      className="flex flex-col cursor-pointer justify-center py-2 w-[50%]"
+      onClick={() => setDepthOrTrades("depth")}
+    >
+      <div
+        className={`text-sm text-center font-medium py-1 border-b-2 ${depthOrTrades === "depth" ? "border-accentBlue text-baseTextHighEmphasis" : "border-transparent text-baseTextMedEmphasis hover:border-baseTextHighEmphasis hover:text-baseTextHighEmphasis"}`}
+      >
+        Orderbook
+      </div>
+    </div>
+  );
+}
+
+function TradesButton({ depthOrTrades, setDepthOrTrades }: { depthOrTrades: string; setDepthOrTrades: any }) {
+  return (
+    <div
+      className="flex flex-col cursor-pointer justify-center py-2 w-[50%]"
+      onClick={() => setDepthOrTrades("trades")}
+    >
+      <div
+        className={`text-sm text-center font-medium py-1 border-b-2 ${depthOrTrades === "trades" ? "border-accentBlue text-baseTextHighEmphasis" : "border-b-2 border-transparent text-baseTextMedEmphasis hover:border-baseTextHighEmphasis hover:text-baseTextHighEmphasis"} `}
+      >
+        Trades
+      </div>
     </div>
   );
 }

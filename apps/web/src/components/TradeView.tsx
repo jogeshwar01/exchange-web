@@ -2,6 +2,8 @@ import { useEffect, useRef } from "react";
 import { ChartManager } from "../utils/chart_manager";
 import { getKlines } from "../utils/requests";
 import { KLine } from "../utils/types";
+import { MarketBar } from "./MarketBar";
+import { Depth } from "./depth/Depth";
 
 function parseCustomDate(dateStr: string) {
   const [datePart, timePart] = dateStr.split(" ");
@@ -26,8 +28,10 @@ export function TradeView({ market }: { market: string }) {
       try {
         klineData = await getKlines(
           market,
-          "1w",
-          Math.floor((new Date().getTime() - 1000 * 60 * 60 * 24 * 7 * 2) / 1000)
+          "1min",
+          Math.floor(
+            (new Date().getTime() - 1000 * 60 * 60 * 24 * 7 * 2) / 1000
+          )
         );
       } catch (e) {}
 
@@ -66,11 +70,17 @@ export function TradeView({ market }: { market: string }) {
   }, [market, chartRef]);
 
   return (
-    <>
-      <div
-        ref={chartRef}
-        style={{ height: "520px", width: "100%", marginTop: 4 }}
-      ></div>
-    </>
+    <div className="flex flex-col justify-center border-b border-transparent">
+      <MarketBar market={market as string} />
+      <div className="flex flex-row h-[75vh] bg-[#0e0f14] rounded-b-lg">
+        <div
+          ref={chartRef}
+          className="w-[70%] rounded-bl-lg overflow-hidden m-4"
+        ></div>
+        <div className="w-[30%] bg-[#0e0f14] px-4 flex flex-col h-full overflow-hidden rounded-br-lg">
+          <Depth market={market as string} />
+        </div>
+      </div>
+    </div>
   );
 }
