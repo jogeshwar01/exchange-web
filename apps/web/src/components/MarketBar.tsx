@@ -1,27 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getTicker } from "../utils/requests";
+import { Ticker } from "../utils/types";
 
-interface DayPrices {
-  price: number;
-  change: number;
-  volume: number;
-  low: number;
-  high: number;
+interface Stat {
+  label: string;
+  value: string;
 }
 
 export const MarketBar = ({ market }: { market: string }) => {
-  const [dayPrices, setDayPrices] = useState<DayPrices>({
-    price: 146.588,
-    change: 0.54,
-    volume: 3290000,
-    low: 145.588,
-    high: 147.588,
-  });
+  const [ticker, setTicker] = useState<Ticker | null>(null);
+  const [stats, setStats] = useState<Stat[]>([]);
 
-  const stats = [
-    { label: "24h Volume", value: `$${dayPrices.volume.toLocaleString()}` },
-    { label: "24h High", value: `$${dayPrices.high.toFixed(2)}` },
-    { label: "24h Low", value: `$${dayPrices.low.toFixed(2)}` },
-  ];
+  useEffect(() => {
+    getTicker(market).then(setTicker);
+
+    setStats([
+      { label: "24h Volume", value: `$${ticker?.volume.toLocaleString()}` },
+      { label: "24h High", value: `$${ticker?.high}` },
+      { label: "24h Low", value: `$${ticker?.low}` },
+    ]);
+  }, [market, ticker?.high, ticker?.low, ticker?.volume]);
 
   return (
     <div className="inline-flex items-center justify-center w-full h-full bg-container-bg thin-scroll">
@@ -62,7 +60,7 @@ export const MarketBar = ({ market }: { market: string }) => {
                   <span className="font-[400] text-[16px] leading-[-0.25px]">
                     <div className="">
                       <span className="whitespace-nowrap">
-                        ${dayPrices.price.toFixed(2)}
+                        ${ticker?.lastPrice}
                       </span>
                     </div>
                   </span>
@@ -75,7 +73,7 @@ export const MarketBar = ({ market }: { market: string }) => {
                   <span className="font-[300] text-[13px] leading-[16px]">
                     <div className="">
                       <span className="text-positive-green flex items-center">
-                        {dayPrices.change}%
+                        {ticker?.priceChange}%
                       </span>
                     </div>
                   </span>
@@ -86,7 +84,7 @@ export const MarketBar = ({ market }: { market: string }) => {
         </div>
 
         {stats.map((stat, index) => (
-          <div className="px-2 xl:px-6 flex flex-col justify-center">
+          <div key={index} className="px-2 xl:px-6 flex flex-col justify-center">
             <div className="outline-none focus:outline-none flex" key={index}>
               <div className="flex flex-col">
                 <span className="font-[400] text-[11px] leading-[12px] tracking-[.15px]">
