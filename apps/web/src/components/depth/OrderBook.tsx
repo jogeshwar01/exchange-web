@@ -118,6 +118,14 @@ export const OrderBook = ({ market }: { market: string }) => {
     });
 
     getTrades(market).then((t) => setPrice(t[0].price));
+
+    return () => {
+      WsManager.getInstance().deRegisterCallback("depth", `DEPTH-${market}`);
+      WsManager.getInstance().sendMessage({
+        method: "UNSUBSCRIBE",
+        params: [`depth.${market}`],
+      });
+    }
   }, [market]);
 
   const calculateWidth = (size: string, totalSize: number) => {

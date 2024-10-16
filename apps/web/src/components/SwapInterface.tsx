@@ -1,11 +1,57 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createOrder } from "../utils/requests";
+import { CreateOrder } from "../utils/types";
 
 export const SwapInterface = ({ market }: { market: string }) => {
   const [isBuyMode, setIsBuyMode] = useState(true); // Buy or Sell mode
   const [orderType, setOrderType] = useState("Limit"); // Limit or Market
-  const [limitPrice, setLimitPrice] = useState(146.833); // Limit price (default)
-  const [size, setSize] = useState(""); // Trade size
-  const [maxUSD, setMaxUSD] = useState(0.0); // Max USD available for trade
+  const [limitPrice, setLimitPrice] = useState(100.0); // Limit price (default)
+  const [size, setSize] = useState(""); // Trade size in SOL
+  const [maxUSD, setMaxUSD] = useState(0.0); // Max USD value based on price * size
+  const [orderUSDValue, setOrderUSDValue] = useState(0.0); // Calculated order USD value
+  const [fees, setFees] = useState(0.0); // Calculated fees
+  const [position, setPosition] = useState(0.0); // Calculated position in SOL
+
+  // Calculate USD value, fees, and position whenever size or limitPrice changes
+  useEffect(() => {
+    const price = orderType === "Market" ? 0 : limitPrice;
+    const calculatedValue = price * Number(size || 0);
+    const calculatedFees = calculatedValue * 0.001; // 0.1% fees
+    setMaxUSD(calculatedValue); // Set the computed USD value
+    setFees(calculatedFees); // Set the computed fees
+    setPosition(Number(size || 0)); // Set position in SOL
+  }, [size, limitPrice, orderType]);
+
+  const handleCreateOrder = async () => {
+    const quantity = Number(size);
+
+    // Basic input checks
+    if (!quantity || quantity <= 0) {
+      return;
+    }
+
+    if (orderType === "Limit" && (limitPrice <= 0 || isNaN(limitPrice))) {
+      return;
+    }
+
+    const side = isBuyMode ? "BUY" : "SELL";
+    const price = orderType === "Market" ? 0 : limitPrice; // Set price to 0 for market orders
+
+    const order: CreateOrder = {
+      market,
+      side,
+      quantity,
+      price,
+      userId: "test_user",
+    };
+
+    try {
+      const response = await createOrder(order);
+      console.log("Order created:", response);
+    } catch (error) {
+      console.error("Error creating order:", error);
+    }
+  };
 
   return (
     <div className="h-full">
@@ -68,7 +114,6 @@ export const SwapInterface = ({ market }: { market: string }) => {
                   </div>
                 </div>
 
-                {/* Conditional rendering for Limit Price input */}
                 {orderType === "Limit" && (
                   <div className="flex flex-col w-1/2">
                     <div className="text-text-tertiary font-normal pointer-events-none select-none mt-0">
@@ -170,7 +215,15 @@ export const SwapInterface = ({ market }: { market: string }) => {
                         className="px-2 pt-0.5 w-full bg-input-bg default-transition focus:outline-none border-none h-full font-numeral text-text-secondary css-e4p6dg"
                         type="number"
                         value={maxUSD}
-                        disabled
+                        onChange={(e) => {
+                          const newUSDValue = Number(e.target.value);
+                          setMaxUSD(newUSDValue);
+
+                          if (limitPrice > 0) {
+                            const newSize = newUSDValue / limitPrice;
+                            setSize(newSize.toFixed(6));
+                          }
+                        }}
                         style={{ paddingRight: "20px" }}
                       />
                       <div className="absolute top-0 flex items-center h-full space-x-1 right-3 undefined z-1 select-none">
@@ -191,18 +244,17 @@ export const SwapInterface = ({ market }: { market: string }) => {
 
               <span className="flex-shrink-0 w-full pb-l"></span>
 
-              {/* Fees and Position */}
-              <div className="flex flex-col justify-center mt-12}">
+              <div className="flex flex-col justify-center">
                 <div className="flex flex-col w-full space-y-2 rounded-md advanced-trade-details">
                   <span className="font-[300] text-[12px] leading-[14px] tracking-[0.15px] flex items-center justify-between w-full">
                     <div className="text-text-secondary shrink-0">
                       <span className="font-[300] text-[12px] leading-[14px] tracking-[0.15px]">
-                        Fees
+                        Fees (0.1%)
                       </span>
                     </div>
                     <div className="text-text-default ">
                       <span className="font-[300] text-[12px] leading-[14px] tracking-[0.15px]">
-                        $0.00
+                        ${fees.toFixed(2)}
                       </span>
                     </div>
                   </span>
@@ -210,7 +262,7 @@ export const SwapInterface = ({ market }: { market: string }) => {
                     <div className="text-text-secondary shrink-0">Position</div>
                     <div className="text-text-default ">
                       <span className="font-[300] text-[12px] leading-[14px] tracking-[0.15px]">
-                        0 SOL
+                        {position.toFixed(2)} SOL
                       </span>
                     </div>
                   </span>
@@ -218,8 +270,19 @@ export const SwapInterface = ({ market }: { market: string }) => {
 
                 <span className="flex-shrink-0 w-full pb-s"></span>
                 <span className="flex-shrink-0 w-full pb-m"></span>
-                <button className="space-x-2 disabled:cursor-not-allowed disabled:bg-button-disabled disabled:hover:bg-button-disabled disabled:text-text-disabled inline-flex rounded-sm items-center justify-center transition-all w-full h-[44px] uppercase py-[6px] px-[12px] text-text-secondary-button bg-button-secondary-bg hover:bg-button-secondary-bg-hover">
-                  <span className="mt-0.5">Sign up to trade</span>
+                <button
+                  onClick={handleCreateOrder}
+                  className={`space-x-2 disabled:cursor-not-allowed disabled:bg-button-disabled disabled:hover:bg-button-disabled disabled:text-text-disabled inline-flex rounded-sm items-center justify-center transition-all w-full h-[44px] uppercase py-[6px] px-[12px] ${
+                    isBuyMode
+                      ? "bg-positive-green hover:bg-positive-green-hover border-positive-green text-black"
+                      : "bg-negative-red hover:bg-negative-red-hover text-black"
+                  }`}
+                >
+                  {isBuyMode ? (
+                    <span className="mt-0.5">Buy</span>
+                  ) : (
+                    <span className="mt-0.5">Sell</span>
+                  )}
                 </button>
               </div>
             </div>

@@ -39,32 +39,15 @@ export class WsManager {
       const type = message.data.e;
       if (this.callbacks[type]) {
         this.callbacks[type].forEach(({ callback }: { callback: any }) => {
-          if (type === "ticker") {
-            const newTicker: Partial<Ticker> = {
-              lastPrice: message.data.c,
-              high: message.data.h,
-              low: message.data.l,
-              volume: message.data.v,
-              quoteVolume: message.data.V,
-              symbol: message.data.s,
-            };
-            console.log(newTicker);
-            callback(newTicker);
-          }
           if (type === "depth") {
-            // const newTicker: Partial<Ticker> = {
-            //     lastPrice: message.data.c,
-            //     high: message.data.h,
-            //     low: message.data.l,
-            //     volume: message.data.v,
-            //     quoteVolume: message.data.V,
-            //     symbol: message.data.s,
-            // }
-            // console.log(newTicker);
-            // callback(newTicker);
             const updatedBids = message.data.b;
             const updatedAsks = message.data.a;
             callback({ bids: updatedBids, asks: updatedAsks });
+          }
+
+          if (type === "trade") {
+            const trades = message.data;
+            callback(trades);
           }
         });
       }

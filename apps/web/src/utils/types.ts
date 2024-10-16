@@ -37,3 +37,11 @@ export interface Ticker {
   trades: string;
   volume: string;
 }
+
+export interface CreateOrder {
+  market: string;
+  side: string;
+  quantity: number;
+  price: number;
+  userId: string;
+}

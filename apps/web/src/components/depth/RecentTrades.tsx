@@ -1,20 +1,59 @@
 import { useEffect, useState } from "react";
 import { Trade } from "../../utils/types";
 import { getTrades } from "../../utils/requests";
+import { WsManager } from "../../utils/ws_manager";
 
 export const RecentTrades = ({ market }: { market: string }) => {
   const [trades, setTrades] = useState<Trade[]>([]);
 
   useEffect(() => {
+    WsManager.getInstance().sendMessage({
+      method: "SUBSCRIBE",
+      params: [`trade.${market}`],
+    });
+
+    WsManager.getInstance().registerCallback(
+      "trade",
+      (data: any) => {
+        console.log("trade has been updated");
+        console.log(data);
+
+        const newTrade: Trade = {
+          id: data.t,
+          isBuyerMaker: data.m,
+          price: data.p,
+          quantity: data.q,
+          quoteQuantity: data.q,
+          timestamp: data.T,
+        };
+
+        setTrades((oldTrades) => {
+          const newTrades = [...oldTrades];
+          newTrades.unshift(newTrade);
+          newTrades.pop();
+          return newTrades;
+        });
+      },
+      `TRADE-${market}`
+    );
+
     getTrades(market).then((trades) => {
       trades = trades.filter((trade) => parseFloat(trade.quantity) !== 0);
       trades = trades.slice(0, 50);
       setTrades(trades);
     });
+
+    return () => {
+      WsManager.getInstance().deRegisterCallback("trade", `TRADE-${market}`);
+      WsManager.getInstance().sendMessage({
+        method: "UNSUBSCRIBE",
+        params: [`trade.${market}`],
+      });
+    };
   }, [market]);
 
   const formatTime = (timestamp: number) => {
-    const date = new Date(timestamp * 1000); // Assuming timestamp is in seconds
+    const date = new Date(timestamp);
     return date.toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
