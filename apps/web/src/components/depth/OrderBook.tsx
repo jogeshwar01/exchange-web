@@ -90,6 +90,10 @@ export const OrderBook = ({ market }: { market: string }) => {
       const bidsData = depth.bids;
       const asksData = depth.asks;
 
+      if (!bidsData && !asksData) {
+        return;
+      }
+
       const filteredBids = bidsData.filter((bid) => parseFloat(bid[1]) !== 0);
       const filteredAsks = asksData.filter((ask) => parseFloat(ask[1]) !== 0);
 
@@ -125,7 +129,7 @@ export const OrderBook = ({ market }: { market: string }) => {
         method: "UNSUBSCRIBE",
         params: [`depth.${market}`],
       });
-    }
+    };
   }, [market]);
 
   const calculateWidth = (size: string, totalSize: number) => {

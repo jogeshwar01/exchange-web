@@ -44,7 +44,7 @@ export const SwapInterface = ({ market }: { market: string }) => {
       side,
       quantity,
       price,
-      userId: "test_user",
+      userId: localStorage.getItem("user_id") ?? "test_user",
     };
 
     try {
@@ -130,11 +130,12 @@ export const SwapInterface = ({ market }: { market: string }) => {
                         <input
                           className="px-2 pt-0.5 w-full bg-input-bg text-text-input default-transition focus:outline-none border-none h-full font-numeral css-e4p6dg"
                           type="number"
+                          step={0.01}
                           value={limitPrice}
                           onChange={(e) =>
                             setLimitPrice(Number(e.target.value))
                           }
-                          style={{ paddingRight: "57px" }}
+                          style={{ paddingRight: "40px" }}
                         />
                         <div className="absolute top-0 flex items-center h-full space-x-1 right-3 undefined z-1 select-none">
                           <span className="pointer-events-none mt-0.5 text-text-default text-xs">
@@ -176,9 +177,10 @@ export const SwapInterface = ({ market }: { market: string }) => {
                       <input
                         className="px-2 pt-0.5 w-full bg-input-bg default-transition focus:outline-none border-none h-full font-numeral text-text-secondary css-e4p6dg"
                         type="number"
+                        step={0.001}
                         value={size}
                         onChange={(e) => setSize(e.target.value)}
-                        style={{ paddingRight: "20px" }}
+                        style={{ paddingRight: "40px" }}
                       />
                       <div className="absolute top-0 flex items-center h-full space-x-1 right-3 undefined z-1 select-none">
                         <div className="h-[18px] w-[18px]">
@@ -228,7 +230,7 @@ export const SwapInterface = ({ market }: { market: string }) => {
                             setSize(newSize.toFixed(6));
                           }
                         }}
-                        style={{ paddingRight: "20px" }}
+                        style={{ paddingRight: "40px" }}
                       />
                       <div className="absolute top-0 flex items-center h-full space-x-1 right-3 undefined z-1 select-none">
                         <div className="h-[18px] w-[18px]">

@@ -3,9 +3,24 @@ import { MarketBar } from "../components/MarketBar";
 import { NetBar } from "../components/NetBar";
 import { SwapInterface } from "../components/SwapInterface";
 import { TradeInterface } from "../components/TradeInterface";
+import { useEffect } from "react";
+import { createUser } from "../utils/requests";
 
 export const Trade = () => {
   const { market } = useParams();
+
+  useEffect(() => {
+    async function initialiseUser() {
+      const userId = localStorage.getItem("user_id");
+      if (!userId) {
+        const user = await createUser();
+        console.log(user);
+        localStorage.setItem("user_id", user.user_id);
+      }
+    }
+
+    initialiseUser();
+  }, []);
 
   return (
     <div className="w-screen h-screen bg-main-bg">

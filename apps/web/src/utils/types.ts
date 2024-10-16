@@ -45,3 +45,8 @@ export interface CreateOrder {
   price: number;
   userId: string;
 }
+
+export interface UserId {
+  status: string;
+  user_id: string;
+}
