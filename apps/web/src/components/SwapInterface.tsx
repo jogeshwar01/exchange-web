@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { createOrder } from "../utils/requests";
 import { CreateOrder } from "../utils/types";
+import { toast } from "sonner";
 
 export const SwapInterface = ({ market }: { market: string }) => {
   const [isBuyMode, setIsBuyMode] = useState(true); // Buy or Sell mode
@@ -8,7 +9,6 @@ export const SwapInterface = ({ market }: { market: string }) => {
   const [limitPrice, setLimitPrice] = useState(100.0); // Limit price (default)
   const [size, setSize] = useState(""); // Trade size in SOL
   const [maxUSD, setMaxUSD] = useState(0.0); // Max USD value based on price * size
-  const [orderUSDValue, setOrderUSDValue] = useState(0.0); // Calculated order USD value
   const [fees, setFees] = useState(0.0); // Calculated fees
   const [position, setPosition] = useState(0.0); // Calculated position in SOL
 
@@ -27,10 +27,12 @@ export const SwapInterface = ({ market }: { market: string }) => {
 
     // Basic input checks
     if (!quantity || quantity <= 0) {
+      toast.error("Please enter a valid size greater than zero.");
       return;
     }
 
     if (orderType === "Limit" && (limitPrice <= 0 || isNaN(limitPrice))) {
+      toast.error("Please enter a valid limit price.");
       return;
     }
 
@@ -48,8 +50,10 @@ export const SwapInterface = ({ market }: { market: string }) => {
     try {
       const response = await createOrder(order);
       console.log("Order created:", response);
+      toast.success("Order created successfully!");
     } catch (error) {
       console.error("Error creating order:", error);
+      toast.error("Error creating order!");
     }
   };
 
