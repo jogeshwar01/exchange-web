@@ -36,13 +36,6 @@ export const RecentTrades = () => {
           msOverflowStyle: "none" /* For Internet Explorer and Edge */,
         }}
       >
-        {/* Custom style for WebKit-based browsers to hide scrollbar */}
-        <style>{`
-          div::-webkit-scrollbar {
-            display: none; /* For Chrome, Safari, and Opera */
-          }
-        `}</style>
-
         {trades.map((trade, index) => (
           <div
             key={index}

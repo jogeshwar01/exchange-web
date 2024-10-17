@@ -1,25 +1,45 @@
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import { TradesContext } from "../../state/TradesProvider";
 
 export const OrderBook = () => {
-  const { bids, asks, price, totalBidSize, totalAskSize, orderBookRef } =
+  const { bids, asks, price, totalBidSize, totalAskSize } =
     useContext(TradesContext);
 
-  const calculateWidth = (size: string, totalSize: number) => {
+  const bidsRef = useRef<HTMLDivElement | null>(null);
+  const asksRef = useRef<HTMLDivElement | null>(null);
+
+  const calculateWidth = (size: string, totalSize: number): string => {
     return totalSize ? `${(parseFloat(size) * 100) / totalSize}%` : "0%";
   };
 
+  const calculateCumulativeWidth = (
+    cumulativeSize: number,
+    totalSize: number
+  ): string => {
+    return totalSize ? `${(cumulativeSize * 100) / totalSize}%` : "0%";
+  };
+
   const handleRecenter = () => {
-    if (orderBookRef.current) {
-      // get it at half of the container height not the scroll height
-      const containerHeight = orderBookRef.current.clientHeight;
-      const halfHeight = containerHeight / 2;
-      orderBookRef.current.scrollTo(
-        0,
-        orderBookRef.current.scrollTop + halfHeight
-      );
+    if (bidsRef.current && asksRef.current) {
+      bidsRef.current.scrollTop = 0;
+      asksRef.current.scrollTop = 0;
+
+      // const containerHeight = bidsRef.current.parentElement.clientHeight;
+      // const halfContainerHeight = containerHeight / 2;
+
+      // const bidsMiddle = bidsRef.current.scrollHeight / 2;
+      // bidsRef.current.scrollTop = bidsMiddle - halfContainerHeight;
+
+      // // different calculation for asks because it's reversed
+      // const asksMiddle = asksRef.current.scrollHeight / 2;
+      // const asksMaxScrollTop = asksRef.current.scrollHeight - asksRef.current.clientHeight;
+      // asksRef.current.scrollTop = asksMaxScrollTop - (asksMiddle - halfContainerHeight);
     }
   };
+
+  // Cumulative calculation for bids and asks
+  let cumulativeBidSize = 0;
+  let cumulativeAskSize = 0;
 
   return (
     <div className="h-full">
@@ -35,51 +55,62 @@ export const OrderBook = () => {
             </span>
           </div>
 
-          <div
-            ref={orderBookRef}
-            className="absolute w-full max-h-full mt-6 overflow-y-auto flex flex-col-reverse"
-            style={{
-              scrollBehavior: "smooth",
-              scrollbarWidth: "none" /* For Firefox */,
-              msOverflowStyle: "none" /* For Internet Explorer and Edge */,
-            }}
-          >
-            <style>{`
-              div::-webkit-scrollbar {
-                display: none; /* For Chrome, Safari, and Opera */
-              }
-            `}</style>
-            {/* Buy Orders */}
+          <div className="flex-1 flex flex-col-reverse relative overflow-hidden">
+            {/* Bids Scrollable Area */}
             <div
-              data-puppet-tag="buy"
-              className="flex flex-col w-full mb-[32px]"
+              ref={bidsRef}
+              className="flex-1 overflow-y-auto flex flex-col"
+              style={{
+                scrollBehavior: "smooth",
+                scrollbarWidth: "none",
+                msOverflowStyle: "none",
+              }}
             >
-              {bids?.map((order, index) => (
-                <div key={index} className="relative w-full mb-[1px]">
-                  <div className="w-full h-6 flex relative box-border text-xs leading-7 justify-between font-display ml-0">
-                    <div className="flex flex-row mx-2 justify-between font-numeral w-full">
-                      <div className="z-10 hover:brightness-125 hover:cursor-pointer text-xs leading-6 text-text-positive-green-button">
-                        {order[0]}
+              {bids?.map((order, index) => {
+                const size = parseFloat(order[1]);
+                cumulativeBidSize += size; // Keep track of cumulative size
+
+                return (
+                  <div key={index} className="relative w-full mb-[1px]">
+                    <div className="w-full h-6 flex relative box-border text-xs leading-7 justify-between font-display ml-0">
+                      <div className="flex flex-row mx-2 justify-between font-numeral w-full">
+                        <div className="z-10 text-xs leading-6 text-text-positive-green-button">
+                          {order[0]}
+                        </div>
+                        <div className="z-10 text-xs leading-6 text-static-default">
+                          {order[1]}
+                        </div>
                       </div>
-                      <div className="z-10 text-xs leading-6 text-static-default hover:brightness-125 hover:cursor-pointer items-center inline-flex">
-                        {order[1]}
+                      {/* Cumulative background */}
+                      <div className="absolute opacity-20 w-full h-full flex justify-start">
+                        <div
+                          className="bg-positive-green-pressed brightness-80 h-full"
+                          style={{
+                            width: calculateCumulativeWidth(
+                              cumulativeBidSize,
+                              totalBidSize
+                            ),
+                            transition: "width 0.3s ease-in-out",
+                          }}
+                        ></div>
                       </div>
-                    </div>
-                    <div className="absolute opacity-20 w-full h-full flex justify-start">
-                      <div
-                        className="bg-positive-green brightness-100 h-full"
-                        style={{
-                          width: calculateWidth(order[1], totalBidSize),
-                          transition: "width 0.3s ease-in-out",
-                        }}
-                      ></div>
+                      {/* Size-based background */}
+                      <div className="absolute opacity-40 w-full h-full flex justify-start">
+                        <div
+                          className="bg-positive-green brightness-100 h-full"
+                          style={{
+                            width: calculateWidth(order[1], totalBidSize),
+                            transition: "width 0.3s ease-in-out",
+                          }}
+                        ></div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
-            {/* Current Price and Recenter */}
+            {/* Recenter Button */}
             <div className="relative w-full px-2 inline-flex justify-between items-center py-1 min-h-[26px] bg-container-bg-hover text-text-default z-20">
               <div className="flex items-center space-x-2">
                 <div className="flex flex-col">
@@ -98,34 +129,58 @@ export const OrderBook = () => {
               </div>
             </div>
 
-            {/* Sell Orders */}
+            {/* Asks Scrollable Area */}
             <div
-              data-puppet-tag="sell"
-              className="flex flex-col-reverse w-full mt-[32px]"
+              ref={asksRef}
+              className="flex-1 overflow-y-auto flex flex-col-reverse"
+              style={{
+                scrollBehavior: "smooth",
+                scrollbarWidth: "none",
+                msOverflowStyle: "none",
+              }}
             >
-              {asks?.map((order, index) => (
-                <div key={index} className="relative w-full mb-[1px]">
-                  <div className="w-full h-6 flex relative box-border text-xs leading-7 justify-between font-display mr-0">
-                    <div className="flex flex-row mx-2 justify-between font-numeral w-full">
-                      <div className="z-10 hover:brightness-125 hover:cursor-pointer text-xs leading-6 text-text-negative-red-button">
-                        {order[0]}
+              {asks?.map((order, index) => {
+                const size = parseFloat(order[1]);
+                cumulativeAskSize += size; // Keep track of cumulative size
+
+                return (
+                  <div key={index} className="relative w-full mb-[1px]">
+                    <div className="w-full h-6 flex relative box-border text-xs leading-7 justify-between font-display mr-0">
+                      <div className="flex flex-row mx-2 justify-between font-numeral w-full">
+                        <div className="z-10 text-xs leading-6 text-text-negative-red-button">
+                          {order[0]}
+                        </div>
+                        <div className="z-10 text-xs leading-6 text-static-default">
+                          {order[1]}
+                        </div>
                       </div>
-                      <div className="z-10 text-xs leading-6 text-static-default hover:brightness-125 hover:cursor-pointer items-center inline-flex">
-                        {order[1]}
+                      {/* Cumulative background */}
+                      <div className="absolute opacity-20 w-full h-full flex justify-start">
+                        <div
+                          className="bg-negative-red-pressed brightness-80 h-full"
+                          style={{
+                            width: calculateCumulativeWidth(
+                              cumulativeAskSize,
+                              totalAskSize
+                            ),
+                            transition: "width 0.3s ease-in-out",
+                          }}
+                        ></div>
                       </div>
-                    </div>
-                    <div className="absolute opacity-20 w-full h-full flex justify-start">
-                      <div
-                        className="bg-negative-red brightness-100 h-full"
-                        style={{
-                          width: calculateWidth(order[1], totalAskSize),
-                          transition: "width 0.3s ease-in-out",
-                        }}
-                      ></div>
+                      {/* Size-based background */}
+                      <div className="absolute opacity-40 z-10 w-full h-full flex justify-start">
+                        <div
+                          className="bg-negative-red brightness-100 h-full"
+                          style={{
+                            width: calculateWidth(order[1], totalAskSize),
+                            transition: "width 0.3s ease-in-out",
+                          }}
+                        ></div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>

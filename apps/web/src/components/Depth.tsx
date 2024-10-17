@@ -241,6 +241,13 @@ export const Depth = ({ market }: { market: string }) => {
           ></div>
         </div>
 
+        {/* Custom style for WebKit-based browsers to hide scrollbar */}
+        <style>{`
+          div::-webkit-scrollbar {
+            display: none; /* For Chrome, Safari, and Opera */
+          }
+        `}</style>
+
         {/* Tab Content */}
         {activeTab === "orderbook" ? <OrderBook /> : <RecentTrades />}
       </div>
