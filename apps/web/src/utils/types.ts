@@ -50,3 +50,8 @@ export interface UserId {
   status: string;
   user_id: string;
 }
+
+export interface Stat {
+  label: string;
+  value: string;
+}

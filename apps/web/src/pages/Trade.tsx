@@ -14,7 +14,7 @@ export const Trade = () => {
       const userId = localStorage.getItem("user_id");
       if (!userId) {
         const user = await createUser();
-        console.log(user);
+        console.log("Created Test User", user);
         localStorage.setItem("user_id", user.user_id);
       }
     }

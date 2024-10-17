@@ -1,12 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { createOrder } from "../utils/requests";
 import { CreateOrder } from "../utils/types";
 import { toast } from "sonner";
+import { TradesContext } from "../state/TradesProvider";
 
 export const SwapInterface = ({ market }: { market: string }) => {
+  const { price } = useContext(TradesContext);
+  const currentPrice = parseFloat(price ?? "0");
+
   const [isBuyMode, setIsBuyMode] = useState(true); // Buy or Sell mode
   const [orderType, setOrderType] = useState("Limit"); // Limit or Market
-  const [limitPrice, setLimitPrice] = useState(100.0); // Limit price (default)
+  const [limitPrice, setLimitPrice] = useState(currentPrice); // Limit price (default)
   const [size, setSize] = useState(""); // Trade size in SOL
   const [maxUSD, setMaxUSD] = useState(0.0); // Max USD value based on price * size
   const [fees, setFees] = useState(0.0); // Calculated fees
@@ -14,13 +18,13 @@ export const SwapInterface = ({ market }: { market: string }) => {
 
   // Calculate USD value, fees, and position whenever size or limitPrice changes
   useEffect(() => {
-    const price = orderType === "Market" ? 0 : limitPrice;
+    const price = orderType === "Market" ? currentPrice : limitPrice;
     const calculatedValue = price * Number(size || 0);
     const calculatedFees = calculatedValue * 0.001; // 0.1% fees
     setMaxUSD(calculatedValue); // Set the computed USD value
     setFees(calculatedFees); // Set the computed fees
     setPosition(Number(size || 0)); // Set position in SOL
-  }, [size, limitPrice, orderType]);
+  }, [size, limitPrice, orderType, currentPrice]);
 
   const handleCreateOrder = async () => {
     const quantity = Number(size);
@@ -37,13 +41,13 @@ export const SwapInterface = ({ market }: { market: string }) => {
     }
 
     const side = isBuyMode ? "BUY" : "SELL";
-    const price = orderType === "Market" ? 0 : limitPrice; // Set price to 0 for market orders
+    const orderPrice = orderType === "Market" ? currentPrice : limitPrice; // Set price to 0 for market orders
 
     const order: CreateOrder = {
       market,
       side,
       quantity,
-      price,
+      price: orderPrice,
       userId: localStorage.getItem("user_id") ?? "test_user",
     };
 

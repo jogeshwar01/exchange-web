@@ -1,15 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { getTicker } from "../utils/requests";
-import { Ticker } from "../utils/types";
-
-interface Stat {
-  label: string;
-  value: string;
-}
+import { useContext } from "react";
+import { TradesContext } from "../state/TradesProvider";
 
 export const MarketBar = ({ market }: { market: string }) => {
-  const [ticker, setTicker] = useState<Ticker | null>(null);
-  const [stats, setStats] = useState<Stat[]>([]);
+  const { ticker, setTicker, stats, setStats, price } =
+    useContext(TradesContext);
 
   useEffect(() => {
     getTicker(market).then(setTicker);
@@ -19,7 +15,7 @@ export const MarketBar = ({ market }: { market: string }) => {
       { label: "24h High", value: `$${ticker?.high}` },
       { label: "24h Low", value: `$${ticker?.low}` },
     ]);
-  }, [market, ticker?.high, ticker?.low, ticker?.volume]);
+  }, [market, setStats, setTicker, ticker?.high, ticker?.low, ticker?.volume]);
 
   return (
     <div className="inline-flex items-center justify-center w-full h-full bg-container-bg thin-scroll">
@@ -59,9 +55,7 @@ export const MarketBar = ({ market }: { market: string }) => {
                 <div className="overflow-hidden text-lg font-semibold text-text-default font-numeral">
                   <span className="font-[400] text-[16px] leading-[-0.25px]">
                     <div className="">
-                      <span className="whitespace-nowrap">
-                        ${ticker?.lastPrice}
-                      </span>
+                      <span className="whitespace-nowrap">${price}</span>
                     </div>
                   </span>
                 </div>
@@ -84,7 +78,10 @@ export const MarketBar = ({ market }: { market: string }) => {
         </div>
 
         {stats.map((stat, index) => (
-          <div key={index} className="px-2 xl:px-6 flex flex-col justify-center">
+          <div
+            key={index}
+            className="px-2 xl:px-6 flex flex-col justify-center"
+          >
             <div className="outline-none focus:outline-none flex" key={index}>
               <div className="flex flex-col">
                 <span className="font-[400] text-[11px] leading-[12px] tracking-[.15px]">
