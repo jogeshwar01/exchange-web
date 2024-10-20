@@ -34,7 +34,7 @@ export const Trade = () => {
                     <MarketBar market={market as string} />
                   </div>
                   <div style={{ gridArea: "1 / 3 / 2 / 4" }}>
-                    <NetBar market={market as string} />
+                    <NetBar />
                   </div>
                   <div style={{ gridArea: "2 / 3 / 4 / 4" }}>
                     <SwapInterface market={market as string} />

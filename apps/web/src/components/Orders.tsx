@@ -25,27 +25,6 @@ export const Orders = ({ market }: { market: string }) => {
                   </div>
                 </div>
               </div>
-              <div className="py-1 px-4 sm:px-3 flex items-center relative hover:cursor-pointer hover:bg-container-bg-hover text-text-label border-r border-container-border leading-3 h-[34px]">
-                <div className="flex items-center w-full">
-                  <div className="flex items-center gap-1 mx-auto">
-                    <span className="font-normal text-sm">Trades</span>
-                  </div>
-                </div>
-              </div>
-              <div className="py-1 px-4 sm:px-3 flex items-center relative hover:cursor-pointer hover:bg-container-bg-hover text-text-label border-r border-container-border leading-3 h-[34px]">
-                <div className="flex items-center w-full">
-                  <div className="flex items-center gap-1 mx-auto">
-                    <span className="font-normal text-sm">Positions</span>
-                  </div>
-                </div>
-              </div>
-              <div className="py-1 px-4 sm:px-3 flex items-center relative hover:cursor-pointer hover:bg-container-bg-hover text-text-label border-r border-container-border leading-3 h-[34px]">
-                <div className="flex items-center w-full">
-                  <div className="flex items-center gap-1 mx-auto">
-                    <span className="text-sm">Account</span>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
