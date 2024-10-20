@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import { MarketBar } from "../components/MarketBar";
 import { NetBar } from "../components/NetBar";
 import { SwapInterface } from "../components/SwapInterface";
@@ -12,15 +12,22 @@ export const Trade = () => {
   useEffect(() => {
     async function initialiseUser() {
       const userId = localStorage.getItem("user_id");
-      if (!userId) {
+
+      if (!userId || userId === "null" || userId === "undefined") {
         const user = await createUser();
         console.log("Created Test User", user);
-        localStorage.setItem("user_id", user.user_id);
+        if (user && user.user_id) {
+          localStorage.setItem("user_id", user.user_id);
+        }
       }
     }
 
     initialiseUser();
   }, []);
+
+  if (market !== "JOG_USDC") {
+    return <Navigate to="/trade/JOG_USDC" />;
+  }
 
   return (
     <div className="w-screen h-screen bg-main-bg">

@@ -11,10 +11,10 @@ export const SwapInterface = ({ market }: { market: string }) => {
   const [isBuyMode, setIsBuyMode] = useState(true); // Buy or Sell mode
   const [orderType, setOrderType] = useState("Limit"); // Limit or Market
   const [limitPrice, setLimitPrice] = useState(currentPrice); // Limit price (default)
-  const [size, setSize] = useState(""); // Trade size in SOL
+  const [size, setSize] = useState(""); // Trade size
   const [maxUSD, setMaxUSD] = useState(0.0); // Max USD value based on price * size
   const [fees, setFees] = useState(0.0); // Calculated fees
-  const [position, setPosition] = useState(0.0); // Calculated position in SOL
+  const [position, setPosition] = useState(0.0); // Calculated position
 
   // Calculate USD value, fees, and position whenever size or limitPrice changes
   useEffect(() => {
@@ -23,7 +23,7 @@ export const SwapInterface = ({ market }: { market: string }) => {
     const calculatedFees = calculatedValue * 0.001; // 0.1% fees
     setMaxUSD(calculatedValue); // Set the computed USD value
     setFees(calculatedFees); // Set the computed fees
-    setPosition(Number(size || 0)); // Set position in SOL
+    setPosition(Number(size || 0)); // Set position
   }, [size, limitPrice, orderType, currentPrice]);
 
   const handleCreateOrder = async () => {
@@ -187,12 +187,12 @@ export const SwapInterface = ({ market }: { market: string }) => {
                         style={{ paddingRight: "40px" }}
                       />
                       <div className="absolute top-0 flex items-center h-full space-x-1 right-3 undefined z-1 select-none">
-                        <div className="h-[18px] w-[18px]">
+                        <div className="h-[20px] w-[20px]">
                           <img
-                            src="https://app.drift.trade/assets/icons/markets/sol.svg"
-                            className="h-[18px] w-[18px]"
-                            width="18"
-                            height="18"
+                            src="/jog.png"
+                            className="rounded-full"
+                            width="20"
+                            height="20"
                             alt="SOL icon"
                           />
                         </div>
@@ -272,7 +272,7 @@ export const SwapInterface = ({ market }: { market: string }) => {
                     <div className="text-text-secondary shrink-0">Position</div>
                     <div className="text-text-default ">
                       <span className="font-[300] text-[12px] leading-[14px] tracking-[0.15px]">
-                        {position.toFixed(2)} SOL
+                        {position.toFixed(2)} JOG
                       </span>
                     </div>
                   </span>

@@ -40,7 +40,7 @@ export const Orders = ({ market }: { market: string }) => {
                     <button className="disabled:cursor-not-allowed bg-transparent hover:bg-button-secondary-bg-hover disabled:text-text-disabled rounded-sm font-display text-text-default h-[32px] text-sm py-[8px] px-[12px] flex items-center justify-center">
                       <a className="flex items-center">
                         <span className="text-xs text-text-default">
-                          Sign in
+                          Coming soon...
                         </span>
                       </a>
                     </button>

@@ -24,9 +24,9 @@ export const MarketBar = ({ market }: { market: string }) => {
           <div className="flex items-center justify-center">
             <div>
               <img
-                src="https://app.drift.trade/assets/icons/markets/sol.svg"
+                src="/jog.png"
                 className="rounded-full relative z-10"
-                width={24}
+                width={28}
               />
             </div>
             <div className="-ml-[20%]">
@@ -38,7 +38,7 @@ export const MarketBar = ({ market }: { market: string }) => {
             </div>
           </div>
           <span className="text-text-default text-[18px] font-normal">
-            SOL/USDC
+            JOG/USDC
           </span>
         </div>
       </div>
