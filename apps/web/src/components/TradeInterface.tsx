@@ -12,7 +12,7 @@ export const TradeInterface = ({ market }: { market: string }) => {
         <Depth market={market as string} />
       </div>
       <div style={{ gridArea: "2 / 1 / 3 / 3" }}>
-        <Orders market={market as string} />
+        <Orders />
       </div>
     </div>
   );

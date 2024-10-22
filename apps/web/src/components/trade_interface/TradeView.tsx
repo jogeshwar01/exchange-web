@@ -13,7 +13,7 @@ const timeOptions = [
 export const TradeView = ({ market }: { market: string }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartManagerRef = useRef<ChartManager | null>(null);
-  const [selectedTime, setSelectedTime] = useState("1min"); // Default to 1 minute
+  const [selectedTime, setSelectedTime] = useState("1h"); // Default to 1 hour
 
   const fetchKlineData = useCallback(
     async (interval: string) => {
@@ -23,7 +23,7 @@ export const TradeView = ({ market }: { market: string }) => {
           market,
           interval,
           Math.floor(
-            (new Date().getTime() - 1000 * 60 * 60 * 24 * 7 * 2) / 1000 // Last 2 weeks
+            (new Date().getTime() - 1000 * 60 * 60 * 24 * 7) / 1000 // Last week
           )
         );
       } catch (e) {

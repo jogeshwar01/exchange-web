@@ -11,15 +11,15 @@ export const Trade = () => {
 
   useEffect(() => {
     async function initialiseUser() {
-      const userId = localStorage.getItem("user_id");
+      // const userId = localStorage.getItem("user_id");
 
-      if (!userId || userId === "null" || userId === "undefined") {
-        const user = await createUser();
-        console.log("Created Test User", user);
-        if (user && user.user_id) {
-          localStorage.setItem("user_id", user.user_id);
-        }
+      // if (!userId || userId === "null" || userId === "undefined") {
+      const user = await createUser();
+      console.log("Created Test User", user);
+      if (user && user.user_id) {
+        localStorage.setItem("user_id", user.user_id);
       }
+      // }
     }
 
     initialiseUser();

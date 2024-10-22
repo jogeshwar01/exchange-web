@@ -1,4 +1,4 @@
-export const Orders = ({ market }: { market: string }) => {
+export const Orders = () => {
   return (
     <div className="h-full bg-container-bg border-container-border rounded border overflow-visible">
       <div
