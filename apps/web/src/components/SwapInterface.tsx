@@ -239,7 +239,7 @@ export const SwapInterface = ({ market }: { market: string }) => {
                       <div className="absolute top-0 flex items-center h-full space-x-1 right-3 undefined z-1 select-none">
                         <div className="h-[18px] w-[18px]">
                           <img
-                            src="https://app.drift.trade/assets/icons/markets/usdc.svg"
+                            src="https://drift-public.s3.eu-central-1.amazonaws.com/assets/icons/markets/usdc.svg"
                             className="h-[18px] w-[18px]"
                             width="18"
                             height="18"
