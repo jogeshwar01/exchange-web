@@ -12,7 +12,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/trade/:market" element={<Trade />} />
-            <Route path="*" element={<Navigate to="/trade/JOG_USDC" />} />
+            <Route path="*" element={<Navigate to="/trade/SOL_USDC" />} />
           </Routes>
         </BrowserRouter>
       </TradesProvider>

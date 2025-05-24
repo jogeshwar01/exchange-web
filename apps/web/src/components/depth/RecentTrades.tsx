@@ -21,7 +21,7 @@ export const RecentTrades = () => {
           Price (USD)
         </span>
         <span className="font-[300] text-[12px] leading-[14px] tracking-[0.15px] pr-1 text-center">
-          Size (JOG)
+          Size (SOL)
         </span>
         <span className="font-[300] text-[12px] leading-[14px] tracking-[0.15px] text-right">
           Time

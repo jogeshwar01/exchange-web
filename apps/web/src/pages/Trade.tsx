@@ -25,8 +25,8 @@ export const Trade = () => {
     initialiseUser();
   }, []);
 
-  if (market !== "JOG_USDC") {
-    return <Navigate to="/trade/JOG_USDC" />;
+  if (market !== "SOL_USDC") {
+    return <Navigate to="/trade/SOL_USDC" />;
   }
 
   return (
