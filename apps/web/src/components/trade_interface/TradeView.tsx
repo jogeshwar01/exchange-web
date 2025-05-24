@@ -13,7 +13,7 @@ const timeOptions = [
 export const TradeView = ({ market }: { market: string }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartManagerRef = useRef<ChartManager | null>(null);
-  const [selectedTime, setSelectedTime] = useState("1h"); // Default to 1 hour
+  const [selectedTime, setSelectedTime] = useState("1m"); // Default to 1 hour
 
   const fetchKlineData = useCallback(
     async (interval: string) => {
@@ -50,7 +50,7 @@ export const TradeView = ({ market }: { market: string }) => {
           chartRef.current,
           cleanedKlineData,
           {
-            background: "#080f18",
+            background: "#121212",
             color: "white",
           }
         );
@@ -74,9 +74,9 @@ export const TradeView = ({ market }: { market: string }) => {
   }, [fetchKlineData, market, selectedTime]);
 
   return (
-    <div className="h-full bg-container-bg border-container-border rounded border overflow-hidden flex flex-col">
+    <div className="h-full bg-container-bg border-container-border rounded-xl border overflow-hidden flex flex-col">
       <div className="w-full py-2 px-3 flex items-center relative justify-between leading-[16px] flex-1 text-text-emphasis">
-        <div className="w-[20%] text-sm">Chart</div>
+        <div className="w-[20%] text-sm">SOL - USDC</div>
         <div className="flex space-x-2">
           <div className="w-[20%] py-1  text-xs">Time</div>
 

@@ -29,7 +29,7 @@ export const Depth = ({ market }: { market: string }) => {
         console.log(data);
 
         setBids((originalBids) => {
-          const bidsAfterUpdate = [...(originalBids || [])];
+          let bidsAfterUpdate = [...(originalBids || [])];
 
           for (let i = 0; i < bidsAfterUpdate.length; i++) {
             for (let j = 0; j < data.bids.length; j++) {
@@ -55,11 +55,13 @@ export const Depth = ({ market }: { market: string }) => {
           bidsAfterUpdate.sort((x, y) =>
             Number(y[0]) < Number(x[0]) ? -1 : 1
           );
+
+          bidsAfterUpdate = bidsAfterUpdate.slice(-30);
           return bidsAfterUpdate;
         });
 
         setAsks((originalAsks) => {
-          const asksAfterUpdate = [...(originalAsks || [])];
+          let asksAfterUpdate = [...(originalAsks || [])];
 
           for (let i = 0; i < asksAfterUpdate.length; i++) {
             for (let j = 0; j < data.asks.length; j++) {
@@ -85,6 +87,8 @@ export const Depth = ({ market }: { market: string }) => {
           asksAfterUpdate.sort((x, y) =>
             Number(y[0]) < Number(x[0]) ? 1 : -1
           );
+
+          asksAfterUpdate = asksAfterUpdate.slice(0, 30);
           return asksAfterUpdate;
         });
       },
@@ -143,8 +147,8 @@ export const Depth = ({ market }: { market: string }) => {
         return;
       }
 
-      const filteredBids = bidsData.filter((bid) => parseFloat(bid[1]) !== 0);
-      const filteredAsks = asksData.filter((ask) => parseFloat(ask[1]) !== 0);
+      let filteredBids = bidsData.filter((bid) => parseFloat(bid[1]) !== 0);
+      let filteredAsks = asksData.filter((ask) => parseFloat(ask[1]) !== 0);
 
       const totalBids = filteredBids.reduce(
         (acc, bid) => acc + parseFloat(bid[1]),
@@ -154,6 +158,9 @@ export const Depth = ({ market }: { market: string }) => {
         (acc, ask) => acc + parseFloat(ask[1]),
         0
       );
+
+      filteredBids = filteredBids.slice(-30);
+      filteredAsks = filteredAsks.slice(0, 30);
 
       setBids(filteredBids);
       setAsks(filteredAsks);
@@ -195,14 +202,14 @@ export const Depth = ({ market }: { market: string }) => {
   ]);
 
   return (
-    <div className="h-full bg-container-bg border-container-border rounded border overflow-hidden flex">
+    <div className="h-full bg-container-bg rounded-xl overflow-hidden flex border border-container-border">
       <div className="flex flex-col grow">
         {/* Tabs Section */}
         <div className="relative">
           <div className="flex">
             <div
               onClick={() => setActiveTab("orderbook")}
-              className={`py-2 px-3 flex items-center relative hover:cursor-pointer hover:bg-container-bg-hover justify-center leading-[16px] flex-1 ${
+              className={`py-2 px-3 flex items-center font-semibold relative hover:cursor-pointer hover:bg-container-bg-hover rounded-xl m-2 justify-center leading-[16px] flex-1 ${
                 activeTab === "orderbook"
                   ? "text-text-emphasis bg-container-bg-selected"
                   : "text-text-label"
@@ -211,25 +218,19 @@ export const Depth = ({ market }: { market: string }) => {
               <span className="flex items-center justify-center text-sm">
                 Orderbook
               </span>
-              {activeTab === "orderbook" && (
-                <div className="absolute left-0 bottom-0 w-full z-10 h-[1px] bg-blue-500"></div>
-              )}
             </div>
 
             <div
               onClick={() => setActiveTab("recentTrades")}
-              className={`py-2 px-3 flex items-center relative hover:cursor-pointer hover:bg-container-bg-hover justify-center leading-[16px] flex-1 ${
+              className={`py-2 px-3 flex items-center font-semibold relative hover:cursor-pointer hover:bg-container-bg-hover rounded-xl m-2 justify-center leading-[16px] flex-1 ${
                 activeTab === "recentTrades"
                   ? "text-text-emphasis bg-container-bg-selected"
                   : "text-text-label"
               }`}
             >
               <span className="flex items-center justify-center text-sm">
-                Recent Trades
+                Trades
               </span>
-              {activeTab === "recentTrades" && (
-                <div className="absolute left-0 bottom-0 w-full z-10 h-[1px] bg-blue-500"></div>
-              )}
             </div>
           </div>
           <div

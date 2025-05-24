@@ -47,10 +47,10 @@ export const OrderBook = () => {
       <div className="relative h-full bg-container-bg">
         <div className="flex flex-col h-full text-text-label fadein-floating-element bg-container-bg xs:min-h-[25vh] md:min-h-0">
           <div className="flex justify-between text-xs px-2 py-1 text-text-tertiary">
-            <span className="font-[300] text-[12px] leading-[14px] tracking-[0.15px] text-center">
+            <span className="font-semibold text-[12px] leading-[14px] tracking-[0.15px] text-center">
               Price
             </span>
-            <span className="font-[300] text-[12px] leading-[14px] tracking-[0.15px] text-left">
+            <span className="font-semibold text-[12px] leading-[14px] tracking-[0.15px] text-left">
               Size
             </span>
           </div>
@@ -59,7 +59,7 @@ export const OrderBook = () => {
             {/* Bids Scrollable Area */}
             <div
               ref={bidsRef}
-              className="flex-1 overflow-y-auto flex flex-col"
+              className="flex-1 overflow-y-auto flex flex-col gap-0.5"
               style={{
                 scrollBehavior: "smooth",
                 scrollbarWidth: "none",
@@ -72,7 +72,7 @@ export const OrderBook = () => {
 
                 return (
                   <div key={index} className="relative w-full mb-[1px]">
-                    <div className="w-full h-6 flex relative box-border text-xs leading-7 justify-between font-display ml-0">
+                    <div className="w-full h-[22px] flex relative box-border text-xs leading-7 justify-between font-display ml-0">
                       <div className="flex flex-row mx-2 justify-between font-numeral w-full">
                         <div className="z-10 text-xs leading-6 text-text-positive-green-button">
                           {order[0]}
@@ -82,7 +82,7 @@ export const OrderBook = () => {
                         </div>
                       </div>
                       {/* Cumulative background */}
-                      <div className="absolute opacity-20 w-full h-full flex justify-start">
+                      <div className="absolute opacity-20 w-full h-full flex justify-end">
                         <div
                           className="bg-positive-green-pressed brightness-80 h-full"
                           style={{
@@ -95,7 +95,7 @@ export const OrderBook = () => {
                         ></div>
                       </div>
                       {/* Size-based background */}
-                      <div className="absolute opacity-40 w-full h-full flex justify-start">
+                      <div className="absolute opacity-40 w-full h-full flex justify-end">
                         <div
                           className="bg-positive-green brightness-100 h-full"
                           style={{
@@ -111,10 +111,10 @@ export const OrderBook = () => {
             </div>
 
             {/* Recenter Button */}
-            <div className="relative w-full px-2 inline-flex justify-between items-center py-1 min-h-[26px] bg-container-bg-hover text-text-default z-20">
+            <div className="relative w-full px-2 inline-flex justify-between items-center min-h-[22px] bg-container-bg-hover text-text-default z-20">
               <div className="flex items-center space-x-2">
                 <div className="flex flex-col">
-                  <span className="font-[300] text-[13px] leading-[16px] text-text-emphasis">
+                  <span className="font-semibold text-[13px] leading-[16px] text-text-emphasis">
                     {price}
                   </span>
                 </div>
@@ -123,7 +123,7 @@ export const OrderBook = () => {
                 onClick={handleRecenter}
                 className="pb-1 cursor-pointer transition-colors text-interactive-link"
               >
-                <span className="font-[400] text-[11px] leading-[12px] tracking-[.15px]">
+                <span className="font-semibold text-[11px] leading-[12px] tracking-[.15px]">
                   Re-center
                 </span>
               </div>
@@ -132,7 +132,7 @@ export const OrderBook = () => {
             {/* Asks Scrollable Area */}
             <div
               ref={asksRef}
-              className="flex-1 overflow-y-auto flex flex-col-reverse"
+              className="flex-1 overflow-y-auto flex flex-col-reverse gap-0.5"
               style={{
                 scrollBehavior: "smooth",
                 scrollbarWidth: "none",
@@ -145,7 +145,7 @@ export const OrderBook = () => {
 
                 return (
                   <div key={index} className="relative w-full mb-[1px]">
-                    <div className="w-full h-6 flex relative box-border text-xs leading-7 justify-between font-display mr-0">
+                    <div className="w-full h-[22px] flex relative box-border text-xs leading-7 justify-between font-display mr-0">
                       <div className="flex flex-row mx-2 justify-between font-numeral w-full">
                         <div className="z-10 text-xs leading-6 text-text-negative-red-button">
                           {order[0]}
@@ -155,7 +155,7 @@ export const OrderBook = () => {
                         </div>
                       </div>
                       {/* Cumulative background */}
-                      <div className="absolute opacity-20 w-full h-full flex justify-start">
+                      <div className="absolute opacity-20 w-full h-full flex justify-end">
                         <div
                           className="bg-negative-red-pressed brightness-80 h-full"
                           style={{
@@ -168,7 +168,7 @@ export const OrderBook = () => {
                         ></div>
                       </div>
                       {/* Size-based background */}
-                      <div className="absolute opacity-40 z-10 w-full h-full flex justify-start">
+                      <div className="absolute opacity-40 z-10 w-full h-full flex justify-end">
                         <div
                           className="bg-negative-red brightness-100 h-full"
                           style={{

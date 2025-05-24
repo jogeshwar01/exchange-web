@@ -30,28 +30,18 @@ export const Trade = () => {
   }
 
   return (
-    <div className="w-screen h-screen bg-main-bg">
-      <div className="flex flex-col w-full h-full">
-        <div className="relative flex-grow h-full w-full overflow-x-hidden overflow-y-auto thin-scroll">
-          <div className="w-full h-full md:absolute">
-            <div className="flex flex-col w-full h-full sm:min-h-[950px] lg:min-h-[900]">
-              <div className="flex flex-col h-full sm:px-4 my-2">
-                <div className="gap-2 h-full grid grid-rows-layout grid-cols-layout">
-                  <div style={{ gridArea: "1 / 1 / 2 / 3" }}>
-                    <MarketBar market={market as string} />
-                  </div>
-                  <div style={{ gridArea: "1 / 3 / 2 / 4" }}>
-                    <NetBar />
-                  </div>
-                  <div style={{ gridArea: "2 / 3 / 4 / 4" }}>
-                    <SwapInterface market={market as string} />
-                  </div>
-                  <div style={{ gridArea: "2 / 1 / 4 / 3" }}>
-                    <TradeInterface market={market as string} />
-                  </div>
-                </div>
-              </div>
-            </div>
+    <div className="bg-main-bg">
+      <div className="grid grid-rows-[60px_1fr] p-4 sm:p-5 min-h-screen gap-2">
+        <div className="grid grid-cols-1 lg:grid-cols-[4fr_1fr] gap-2">
+          <MarketBar market={market as string} />
+          <NetBar />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-[4fr_1fr] gap-2 mt-5 lg:mt-0">
+          <div className="order-2 lg:order-1">
+            <TradeInterface market={market as string} />
+          </div>
+          <div className="order-1 lg:order-2">
+            <SwapInterface market={market as string} />
           </div>
         </div>
       </div>
